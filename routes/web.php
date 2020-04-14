@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    //\Log::debug('Test debug message');
+    return view('main');
 });
 
 Auth::routes();
