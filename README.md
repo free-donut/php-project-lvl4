@@ -1,3 +1,15 @@
+## TASK MANAGER
+
+[![Build Status](https://travis-ci.com/free-donut/php-project-lvl4.svg?branch=master)](https://travis-ci.com/free-donut/php-project-lvl4)
+
+[![Maintainability](https://api.codeclimate.com/v1/badges/7724cc79d2e8feea13f6/maintainability)](https://codeclimate.com/github/free-donut/php-project-lvl4/maintainability)
+
+[![Test Coverage](https://api.codeclimate.com/v1/badges/7724cc79d2e8feea13f6/test_coverage)](https://codeclimate.com/github/free-donut/php-project-lvl4/test_coverage)
+
+https://powerful-wildwood-00823.herokuapp.com/
+
+
+
 <p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
 
 <p align="center">

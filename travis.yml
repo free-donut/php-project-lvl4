@@ -1,0 +1,28 @@
+env:
+  global:
+    - CC_TEST_REPORTER_ID=ec2be3be714fb32ae835c7c5b286988a55f3a8c002698802e0d7f30fe366bb40
+
+language: php
+php:
+    - 7.2
+    - 7.3
+
+services:
+  - postgresql
+
+before_script: 
+  - cp .env.travis .env
+  - psql -c 'create database homestead_test;'
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+  - php artisan key:generate
+  - php artisan migrate
+
+install:
+  - make install
+
+script: make lint test
+
+after_script: 
+  - ./cc-test-reporter after-build -t clover --exit-code $TRAVIS_TEST_RESULT
