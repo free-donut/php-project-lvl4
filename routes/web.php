@@ -20,4 +20,8 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::resource('users', 'UserController', ['except' => [
+    'create', 'store'
+]]);
+
 Route::get('/home', 'HomeController@index')->name('home');
