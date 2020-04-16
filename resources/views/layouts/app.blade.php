@@ -6,6 +6,7 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-param" content="_token" />
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -66,17 +67,10 @@
                                     <a class="dropdown-item" href="{{ route('users.edit', ['user' => Auth::id()]) }}">
                                         {{ __('Edit') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('users.destroy', ['user' => Auth::id()]) }}"
-                                        onclick="event.preventDefault();
-                                                     document.getElementById('delete-form').submit();">
-
+                                    
+                                    <a class="dropdown-item" href="{{ route('users.destroy', ['user' => Auth::id()]) }}" data-confirm="Вы уверены?" data-method="delete" rel="nofollow">
                                         {{ __('Destroy') }}
                                     </a>
-
-                                    <form id="delete-form" action="{{ route('users.destroy', ['user' => Auth::id()]) }}" method="POST" style="display: none;">
-                                        @method('DELETE')
-                                        @csrf
-                                    </form>
 
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();

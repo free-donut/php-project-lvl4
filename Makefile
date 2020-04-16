@@ -3,6 +3,6 @@ test:
 install:
 	composer install
 lint:
-	composer phpcs -- --standard=PSR12 routes app/Http/Controllers tests resources/views
+	composer phpcs -- --standard=PSR12 routes app/Http/Controllers tests
 lint-fix:
-	composer phpcbf -- --standard=PSR12 routes app/Http/Controllers tests resources/views
+	composer phpcbf -- --standard=PSR12 routes app/Http/Controllers tests
