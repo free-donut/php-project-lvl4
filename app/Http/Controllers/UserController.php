@@ -27,27 +27,6 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -55,7 +34,8 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return view('user.show');
+        $user = User::findOrFail($id);
+        return view('user.show', compact('user'));
     }
 
     /**
@@ -89,6 +69,12 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //if ($id == Auth::id()) {
+            $user = User::find($id);
+            //if ($user) {
+                $user->delete();
+            //}
+        //}
+        return redirect()->route('main');
     }
 }

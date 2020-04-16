@@ -32,6 +32,15 @@ class UserTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testDestroy()
+    {
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user)->delete(route('users.destroy', ['user' => $user->id]));
+        $this->assertDeleted($user);
+        //$response->assertStatus(200);
+    }
+    
     public function testEdit()
     {
         $response = $this->get('/');
