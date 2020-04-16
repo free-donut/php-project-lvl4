@@ -10,6 +10,7 @@ use App\User;
 class UserTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
      * A basic feature test example.
      *
@@ -40,8 +41,17 @@ class UserTest extends TestCase
         $this->assertDeleted($user);
         //$response->assertStatus(200);
     }
-    
+
     public function testEdit()
+    {
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user)->get(route('users.edit', ['user' => $user->id]));
+
+        $response->assertStatus(200);
+    }
+
+    public function testUpdate()
     {
         $response = $this->get('/');
 

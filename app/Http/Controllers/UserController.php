@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\User;
 
 class UserController extends Controller
@@ -14,15 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        /*$users = User::all();
-
-        foreach ($users as $user) {
-            echo $user->name;
-            echo "<br>";
-        }
-        $users = User::pluck('name');
-        var_dump($users);*/
-        $users = User::paginate(5);
+        $users = User::orderBy('created_at', 'desc')->paginate(5);
         return view('user.index', compact('users'));
     }
 
@@ -32,7 +26,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(int $id)
     {
         $user = User::findOrFail($id);
         return view('user.show', compact('user'));
@@ -44,9 +38,21 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(int $id)
     {
-        return view('user.edit');
+        if (!Auth::check()) {
+            flash('Please log in or register!')->error();
+            return redirect()
+                ->route('main');
+        }
+        if ($id !== Auth::id()) {
+            flash('Permission denied!')->error();
+            return redirect()
+                ->route('main');
+        }
+
+        $user = User::findOrFail($id);
+        return view('user.edit', compact('user'));
     }
 
     /**
@@ -56,9 +62,29 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
-        //
+        if (!Auth::check()) {
+            flash('Please log in or register!')->error();
+            return redirect()
+                ->route('main');
+        }
+        
+        $user = User::findOrFail($id);
+        if (!Hash::check($request->password, $user->password)) {
+            flash('Invalid password!')->warning();
+            return redirect()
+                ->route('users.edit', ['user' => $user->id]);
+        }
+        $data = $this->validate($request, [
+            'name' => 'required|unique:users,name,' . $id,
+            'email' => 'required|max:256|email',
+        ]);
+        $user->fill($data);
+        $user->save();
+
+        return redirect()
+            ->route('main');
     }
 
     /**
@@ -67,14 +93,21 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
-        //if ($id == Auth::id()) {
+        if (!Auth::check()) {
+            flash('Please log in or register!')->error();
+            return redirect()
+                ->route('main');
+        }
+
+        if ($id == Auth::id()) {
+            flash('Your account has been deleted!')->success();
             $user = User::find($id);
-            //if ($user) {
+            if ($user) {
                 $user->delete();
-            //}
-        //}
+            }
+        }
         return redirect()->route('main');
     }
 }

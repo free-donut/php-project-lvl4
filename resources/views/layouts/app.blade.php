@@ -18,6 +18,8 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+
 </head>
 <body>
     <div id="app">
@@ -61,9 +63,20 @@
                                     <a class="dropdown-item" href="{{ route('users.show', ['user' => Auth::id()]) }}">
                                         {{ __('Show') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('users.destroy', ['user' => Auth::id()]) }}">
+                                    <a class="dropdown-item" href="{{ route('users.edit', ['user' => Auth::id()]) }}">
+                                        {{ __('Edit') }}
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('users.destroy', ['user' => Auth::id()]) }}"
+                                        onclick="event.preventDefault();
+                                                     document.getElementById('delete-form').submit();">
+
                                         {{ __('Destroy') }}
                                     </a>
+
+                                    <form id="delete-form" action="{{ route('users.destroy', ['user' => Auth::id()]) }}" method="POST" style="display: none;">
+                                        @method('DELETE')
+                                        @csrf
+                                    </form>
 
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
@@ -81,7 +94,6 @@
                 </div>
             </div>
         </nav>
-
         <main class="py-4">
             @yield('content')
         </main>
