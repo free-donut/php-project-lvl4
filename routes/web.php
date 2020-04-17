@@ -15,8 +15,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     //\Log::debug('Test debug message');
+     App::setLocale('ru');
     return view('main');
 })->name('main');
+
+Route::get('/home', 'HomeController@index')->name('home');
 
 Auth::routes();
 
@@ -24,4 +27,8 @@ Route::resource('users', 'UserController', ['except' => [
     'create', 'store'
 ]]);
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::resource('tasks', 'TaskController');
+
+Route::resource('task_statuses', 'TaskStatusController', ['except' => [
+    'edit', 'update'
+]]);
