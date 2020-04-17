@@ -61,14 +61,14 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('users.show', ['user' => Auth::id()]) }}">
+                                    <a class="dropdown-item" href="{{ route('users.show',  Auth::user()) }}">
                                         {{ __('Show') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('users.edit', ['user' => Auth::id()]) }}">
+                                    <a class="dropdown-item" href="{{ route('users.edit',  Auth::user()) }}">
                                         {{ __('Edit') }}
                                     </a>
                                     
-                                    <a class="dropdown-item" href="{{ route('users.destroy', ['user' => Auth::id()]) }}" data-confirm="Вы уверены?" data-method="delete" rel="nofollow">
+                                    <a class="dropdown-item" href="{{ route('users.destroy', Auth::user()) }}" data-confirm="Вы уверены?" data-method="delete" rel="nofollow">
                                         {{ __('Destroy') }}
                                     </a>
 

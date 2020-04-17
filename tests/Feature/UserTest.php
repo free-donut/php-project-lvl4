@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserTest extends TestCase
 {
@@ -46,15 +47,56 @@ class UserTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        $response = $this->actingAs($user)->get(route('users.edit', ['user' => $user->id]));
+        $response = $this->actingAs($user)->get(route('users.edit', $user));
 
         $response->assertStatus(200);
     }
 
     public function testUpdate()
     {
-        $response = $this->get('/');
+        $password = '30013001';
+        $hashedPassword = Hash::make($password);
 
-        $response->assertStatus(200);
+        $user = factory(User::class)->create([
+            'password' => $hashedPassword
+        ]);
+
+        $params = [
+            'name' => 'Ron',
+            'email' => 'ron@weasley.com',
+            'password' => $password
+        ];
+
+        $response = $this->actingAs($user)->patch(route('users.update', $user), $params);
+        $response->assertStatus(302);
+
+        $this->assertDatabaseHas('users', [
+            'name' => 'Ron',
+            'email' => 'ron@weasley.com',
+        ]);
+    }
+
+    public function testUpdateWithValidationErrors()
+    {
+        $password = '30013001';
+        $hashedPassword = Hash::make($password);
+
+        $user = factory(User::class)->create([
+            'password' => $hashedPassword
+        ]);
+
+        $params = [
+            'name' => 'Hermione',
+            'email' => 'alohomora',
+            'password' => $password
+        ];
+
+        $response = $this->actingAs($user)->patch(route('users.update', $user), $params);
+        $response->assertStatus(302);
+
+        $this->assertDatabaseMissing('users', [
+            'name' => 'Hermione',
+            'email' => 'alohomora',
+        ]);
     }
 }

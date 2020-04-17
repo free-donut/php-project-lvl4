@@ -42,13 +42,11 @@ class UserController extends Controller
     {
         if (!Auth::check()) {
             flash('Please log in or register!')->error();
-            return redirect()
-                ->route('main');
+            return redirect()->route('main');
         }
         if ($id !== Auth::id()) {
             flash('Permission denied!')->error();
-            return redirect()
-                ->route('main');
+            return redirect()->route('main');
         }
 
         $user = User::findOrFail($id);
@@ -66,25 +64,24 @@ class UserController extends Controller
     {
         if (!Auth::check()) {
             flash('Please log in or register!')->error();
-            return redirect()
-                ->route('main');
+            return redirect()->route('main');
         }
-        
+
         $user = User::findOrFail($id);
+
         if (!Hash::check($request->password, $user->password)) {
             flash('Invalid password!')->warning();
-            return redirect()
-                ->route('users.edit', ['user' => $user->id]);
+            return redirect()->route('users.edit', $user);
         }
+
         $data = $this->validate($request, [
             'name' => 'required|unique:users,name,' . $id,
             'email' => 'required|max:256|email',
         ]);
         $user->fill($data);
         $user->save();
-
-        return redirect()
-            ->route('main');
+        flash('Success!')->success();
+        return redirect()->route('main');
     }
 
     /**
@@ -97,16 +94,16 @@ class UserController extends Controller
     {
         if (!Auth::check()) {
             flash('Please log in or register!')->error();
-            return redirect()
-                ->route('main');
-        }
-
-        if ($id == Auth::id()) {
-            flash('Your account has been deleted!')->success();
+        } elseif ($id === Auth::id()) {
             $user = User::find($id);
             if ($user) {
                 $user->delete();
+                flash('Your account has been deleted!')->success();
+            } else {
+                flash('User doesn\'t exist!')->error();
             }
+        } else {
+            flash('Permission denied!')->error();
         }
         return redirect()->route('main');
     }
