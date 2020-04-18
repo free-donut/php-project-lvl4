@@ -41,11 +41,11 @@ class UserController extends Controller
     public function edit(int $id)
     {
         if (!Auth::check()) {
-            flash('Please log in or register!')->error();
+            flash(__('Please log in or register.'))->error();
             return redirect()->route('main');
         }
         if ($id !== Auth::id()) {
-            flash('Permission denied!')->error();
+            flash(__('Permission denied.'))->error();
             return redirect()->route('main');
         }
 
@@ -63,14 +63,14 @@ class UserController extends Controller
     public function update(Request $request, int $id)
     {
         if (!Auth::check()) {
-            flash('Please log in or register!')->error();
+            flash(__('Please log in or register.'))->error();
             return redirect()->route('main');
         }
 
         $user = User::findOrFail($id);
 
         if (!Hash::check($request->password, $user->password)) {
-            flash('Invalid password!')->warning();
+            flash(__('Invalid password.'))->warning();
             return redirect()->route('users.edit', $user);
         }
 
@@ -80,7 +80,7 @@ class UserController extends Controller
         ]);
         $user->fill($data);
         $user->save();
-        flash('Success!')->success();
+        flash(__('Your account has been updated.'))->success();
         return redirect()->route('main');
     }
 
@@ -93,17 +93,18 @@ class UserController extends Controller
     public function destroy(int $id)
     {
         if (!Auth::check()) {
-            flash('Please log in or register!')->error();
+            flash(__('Please log in or register.'))->error();
         } elseif ($id === Auth::id()) {
             $user = User::find($id);
             if ($user) {
                 $user->delete();
-                flash('Your account has been deleted!')->success();
+                flash(__('Your account has been deleted.'))->success();
+                //flash('Your account has been deleted!')->success();
             } else {
-                flash('User doesn\'t exist!')->error();
+                flash(__('User doesn\'t exist!'))->error();
             }
         } else {
-            flash('Permission denied!')->error();
+            flash(__('Permission denied!'))->error();
         }
         return redirect()->route('main');
     }

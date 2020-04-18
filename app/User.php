@@ -36,4 +36,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    
+    public function creatorTasks()
+    {
+        return $this->hasMany('App\Task', 'creator_id');
+    }
+    public function assignedTasks()
+    {
+        return $this->hasMany('App\Task', 'assigned_to_id');
+    }
 }
