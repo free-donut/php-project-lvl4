@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     //\Log::debug('Test debug message');
-     App::setLocale('ru');
+    //App::setLocale('ru');
     return view('main');
 })->name('main');
 
@@ -29,6 +29,4 @@ Route::resource('users', 'UserController', ['except' => [
 
 Route::resource('tasks', 'TaskController');
 
-Route::resource('task_statuses', 'TaskStatusController', ['except' => [
-    'edit', 'update'
-]]);
+Route::resource('task_statuses', 'TaskStatusController', ['except' => ['show']]);
