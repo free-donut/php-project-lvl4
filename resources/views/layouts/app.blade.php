@@ -32,6 +32,9 @@
                 <a class="navbar-brand" href="{{ route('users.index') }}">
                     {{ __('Users') }}
                 </a>
+                <a class="navbar-brand" href="{{ route('tasks.index') }}">
+                    {{ __('Tasks') }}
+                </a>
                 <a class="navbar-brand" href="{{ route('task_statuses.index') }}">
                     {{ __('Task Statuses') }}
                 </a>

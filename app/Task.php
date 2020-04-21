@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     //
+
+    protected $fillable = [
+        'name', 'status_id', 'assigned_to_id', 'description',
+    ];
+
     public function taskStatus()
     {
         return $this->belongsTo('App\TaskStatus', 'status_id');

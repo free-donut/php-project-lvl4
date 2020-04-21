@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    //\Log::debug('Test debug message');
-    //App::setLocale('ru');
     return view('main');
 })->name('main');
 

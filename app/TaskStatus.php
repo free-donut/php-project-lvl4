@@ -7,6 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class TaskStatus extends Model
 {
     //
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+    ];
+    
     public function tasks()
     {
         return $this->hasMany('App\Task', 'status_id');
