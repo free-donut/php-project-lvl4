@@ -36,6 +36,8 @@ class TaskTest extends TestCase
         $params = factory(Task::class)->make()->toArray();
         $user = User::find($params['creator_id']);
 
+        //$params2 = $params + ['tags' => ['1', '2']];
+
         $response = $this->actingAs($user)->post(route('tasks.store'), $params);
         $response->assertStatus(302);
 

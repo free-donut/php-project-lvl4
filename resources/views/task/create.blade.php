@@ -44,15 +44,15 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="taskStatus" class="col-md-4 col-form-label text-md-right">{{ __('Task Status') }}</label>
+                            <label for="status" class="col-md-4 col-form-label text-md-right">{{ __('Task Status') }}</label>
                             <div class="col-md-6">
-                                <select class="form-control" name="status_id" id="taskStatus">
-                                    @foreach ($taskStatuses as $taskStatus)
-                                        <option value="{{ $taskStatus->id }}">{{ $taskStatus->name }}</option>
+                                <select class="form-control" name="status_id" id="status">
+                                    @foreach ($statuses as $status)
+                                        <option value="{{ $status->id }}">{{ $status->name }}</option>
                                     @endforeach
                                 </select>
 
-                                @error('taskStatus')
+                                @error('status')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -70,6 +70,23 @@
                                 </select>
 
                                 @error('assignee')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label for="tags" class="col-md-4 col-form-label text-md-right">{{ __('Tags') }}</label>
+                            <div class="col-md-6">
+                                <select class="form-control" name="tags[]" id="tags" multiple>
+                                    @foreach ($tags as $tag)
+                                        <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                                    @endforeach
+                                </select>
+
+                                @error('tag')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>

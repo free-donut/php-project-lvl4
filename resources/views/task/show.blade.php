@@ -16,6 +16,13 @@
         <dd class="col-sm-9">{{ $task->taskStatus->name }}</dd>
         <dt class="col-sm-3">{{ __('Description') }}</dt>
         <dd class="col-sm-9">{{ $task->description }}</dd>
+        <dt class="col-sm-3">{{ __('Tags') }}</dt>
+        <dd class="col-sm-9">
+            @foreach($task->tags as $tag)
+            <div>{{ $tag->name }}</div>
+            @endforeach
+
+        </dd>
     </dl>
     @auth
         <a class="btn btn-primary btn-lg" href="{{ route('tasks.destroy', $task) }}" data-confirm="are you sure?" data-method="delete" rel="nofollow"  role="button">{{ __('Remove') }}</a>

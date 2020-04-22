@@ -11,9 +11,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('task_statuses')->insert([
+            ['name' => 'new'],
+            ['name' => 'working'],
+            ['name' => 'testing'],
+            ['name' => 'completed'],
+        ]);
         $this->call(UsersTableSeeder::class);
         $this->call(TagsTableSeeder::class);
-        $this->call(TaskStatusesTableSeeder::class);
+        //$this->call(TaskStatusesTableSeeder::class);
         $this->call(TaskTableSeeder::class);
     }
 }

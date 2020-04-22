@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Task;
+use App\Tag;
 use App\TaskStatus;
 use App\User;
 
@@ -33,9 +34,10 @@ class TaskController extends Controller
             flash(__('Please log in or register.'))->error();
             return redirect()->route('main');
         }
-        $taskStatuses = TaskStatus::all();
+        $tags = Tag::all();
+        $statuses = TaskStatus::all();
         $assignees = User::all();
-        return view('task.create', compact('taskStatuses', 'assignees'));
+        return view('task.create', compact('statuses', 'assignees', 'tags'));
     }
 
     /**
@@ -51,16 +53,33 @@ class TaskController extends Controller
             return redirect()->route('main');
         }
 
-        $params = $this->validate($request, [
+        $validatedParams = $this->validate($request, [
             'name' => 'required|unique:tasks,name,',
             'description' => 'max:1000',
             'status_id' => 'required|exists:task_statuses,id',
             'assigned_to_id' => 'required|exists:users,id',
         ]);
 
+        
+         //$tags = $request->tags;
+
+        //var_dump($tags);
+
         $creator = Auth::user();
-        $task = $creator->creatorTasks()->make($params);
+        $task = $creator->creatorTasks()->make($validatedParams);
         $task->save();
+        if ($request->tags) {
+            $validatedTags = $this->validate($request, [
+                'tags.*' => 'exists:tags,id',
+            ]);
+            $task->tags()->sync($validatedTags['tags']);
+        }
+        if ($request->newTag) {
+            $newTag = new Tag;
+            $newTag->name = $request->newTag;
+            $task->tags()->attach($newTag);
+        }
+
         flash(__('Your task has been saved.'))->success();
         return redirect()->route('tasks.index');
     }
@@ -89,11 +108,12 @@ class TaskController extends Controller
             flash(__('Please log in or register.'))->error();
             return redirect()->route('main');
         }
-
-        $taskStatuses = TaskStatus::all();
+        $tags = Tag::all();
+        $statuses = TaskStatus::all();
         $assignees = User::all();
         $task = Task::findOrFail($id);
-        return view('task.edit', compact('task', 'taskStatuses', 'assignees'));
+        $selectedTags = $task->tags()->get()->pluck('id')->toArray();
+        return view('task.edit', compact('task', 'statuses', 'assignees', 'tags', 'selectedTags'));
     }
 
     /**
@@ -120,6 +140,17 @@ class TaskController extends Controller
 
         $task->fill($data);
         $task->save();
+        if ($request->tags) {
+            $validatedTags = $this->validate($request, [
+                'tags.*' => 'exists:tags,id',
+            ]);
+            $task->tags()->sync($validatedTags['tags']);
+        }
+        if ($request->newTag) {
+            $newTag = new Tag;
+            $newTag->name = $request->newTag;
+            $task->tags()->attach($newTag);
+        }
         flash(__('Your task status has been updated.'))->success();
 
         return redirect()->route('tasks.index');
