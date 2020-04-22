@@ -31,7 +31,7 @@ class TaskController extends Controller
     public function create()
     {
         if (!Auth::check()) {
-            flash(__('Please log in or register.'))->error();
+            flash(__('messages.not_logged'))->error();
             return redirect()->route('main');
         }
         $tags = Tag::all();
@@ -48,22 +48,12 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        if (!Auth::check()) {
-            flash(__('Please log in or register.'))->error();
-            return redirect()->route('main');
-        }
-
         $validatedParams = $this->validate($request, [
             'name' => 'required|unique:tasks,name,',
             'description' => 'max:1000',
             'status_id' => 'required|exists:task_statuses,id',
             'assigned_to_id' => 'required|exists:users,id',
         ]);
-
-        
-         //$tags = $request->tags;
-
-        //var_dump($tags);
 
         $creator = Auth::user();
         $task = $creator->creatorTasks()->make($validatedParams);
@@ -75,12 +65,13 @@ class TaskController extends Controller
             $task->tags()->sync($validatedTags['tags']);
         }
         if ($request->newTag) {
-            $newTag = new Tag;
+            $newTag = new Tag();
             $newTag->name = $request->newTag;
             $task->tags()->attach($newTag);
         }
 
-        flash(__('Your task has been saved.'))->success();
+        flash(__('messages.saved', ['name' => 'Task']))->success();
+
         return redirect()->route('tasks.index');
     }
 
@@ -105,7 +96,7 @@ class TaskController extends Controller
     public function edit($id)
     {
         if (!Auth::check()) {
-            flash(__('Please log in or register.'))->error();
+            flash(__('messages.not_logged'))->error();
             return redirect()->route('main');
         }
         $tags = Tag::all();
@@ -125,10 +116,6 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (!Auth::check()) {
-            flash(__('Please log in or register.'))->error();
-            return redirect()->route('main');
-        }
         $task = Task::findOrFail($id);
 
         $data = $this->validate($request, [
@@ -147,11 +134,11 @@ class TaskController extends Controller
             $task->tags()->sync($validatedTags['tags']);
         }
         if ($request->newTag) {
-            $newTag = new Tag;
+            $newTag = new Tag();
             $newTag->name = $request->newTag;
             $task->tags()->attach($newTag);
         }
-        flash(__('Your task status has been updated.'))->success();
+        flash(__('messages.updated', ['name' => 'Task']))->success();
 
         return redirect()->route('tasks.index');
     }
@@ -164,16 +151,15 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        if (!Auth::check()) {
-            flash(__('Please log in or register.'))->error();
-        }
-        $task = Task::find($id);
-        if ($task) {
+        $task = Task::findOrFail($id);
+
+        if ($task->creator->id === Auth::id()) {
             $task->delete();
-            flash(__('Task has been deleted.'))->success();
+            flash(__('messages.deleled', ['name' => 'Task']))->success();
         } else {
-            flash(__('Task doesn\'t exist!'))->error();
+            flash(__('messages.denied.'))->error();
         }
+
         return redirect()->route('tasks.index');
     }
 }

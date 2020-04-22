@@ -6,8 +6,9 @@
     <div>
         @include('flash::message')
     </div>
-    <a class="btn btn-primary btn-lg" href="{{ route('tasks.create') }}" role="button">{{ __('Add new task') }}</a>
-
+    @auth
+        <a class="btn btn-primary btn-lg" href="{{ route('tasks.create') }}" role="button">{{ __('Add new task') }}</a>
+    @endauth
     <table class="table">
         <thead>
             <tr>
@@ -33,7 +34,9 @@
                     <td>{{ $task->assignedTo->name }}</td>
                     @auth
                         <td>
-                            <a href="{{ route('tasks.destroy', $task) }}" data-confirm="are you sure?" data-method="delete" rel="nofollow">{{ __('Remove') }}</a>
+                            @if($task->creator->id == Auth::id())
+                                <a href="{{ route('tasks.destroy', $task) }}" data-confirm="are you sure?" data-method="delete" rel="nofollow">{{ __('Remove') }}</a>
+                            @endif
                             <a href="{{ route('tasks.edit', $task) }}">{{ __('Edit') }}</a>
                         </td>
                     @endauth

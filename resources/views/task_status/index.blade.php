@@ -6,8 +6,9 @@
     <div>
         @include('flash::message')
     </div>
-    <a class="btn btn-primary btn-lg" href="{{ route('task_statuses.create') }}" role="button">{{ __('Add new task status') }}</a>
-
+    @auth
+        <a class="btn btn-primary btn-lg" href="{{ route('task_statuses.create') }}" role="button">{{ __('Add new task status') }}</a>
+    @endauth
     <table class="table">
         <thead>
             <tr>

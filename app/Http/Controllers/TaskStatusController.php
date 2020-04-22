@@ -27,7 +27,7 @@ class TaskStatusController extends Controller
     public function create()
     {
         if (!Auth::check()) {
-            flash(__('Please log in or register.'))->error();
+            flash(__('messages.not_logged'))->error();
             return redirect()->route('main');
         }
         return view('task_status.create');
@@ -42,11 +42,6 @@ class TaskStatusController extends Controller
      */
     public function store(Request $request)
     {
-        if (!Auth::check()) {
-            flash(__('Please log in or register.'))->error();
-            return redirect()->route('main');
-        }
-
         $name = $this->validate($request, [
             'name' => 'required|unique:task_statuses,name,',
         ]);
@@ -56,20 +51,10 @@ class TaskStatusController extends Controller
         $taskStatus->name = $request->name;
 
         $taskStatus->save();
-        flash(__('Your task status has been saved.'))->success();
+        flash(__('messages.saved', ['name' => 'Task Status']))->success();
         return redirect()->route('task_statuses.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -80,7 +65,7 @@ class TaskStatusController extends Controller
     public function edit($id)
     {
         if (!Auth::check()) {
-            flash(__('Please log in or register.'))->error();
+            flash(__('messages.not_logged'))->error();
             return redirect()->route('main');
         }
         
@@ -97,11 +82,6 @@ class TaskStatusController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (!Auth::check()) {
-            flash(__('Please log in or register.'))->error();
-            return redirect()->route('main');
-        }
-
         $taskStatus = TaskStatus::findOrFail($id);
 
         $data = $this->validate($request, [
@@ -109,7 +89,7 @@ class TaskStatusController extends Controller
         ]);
         $taskStatus->name = $request->name;
         $taskStatus->save();
-        flash(__('Your task status has been updated.'))->success();
+        flash(__('messages.updated', ['name' => 'Task Status']))->success();
         return redirect()->route('task_statuses.index');
     }
 
@@ -121,16 +101,9 @@ class TaskStatusController extends Controller
      */
     public function destroy($id)
     {
-        if (!Auth::check()) {
-            flash(__('Please log in or register.'))->error();
-        }
-        $taskStatus = TaskStatus::find($id);
-        if ($taskStatus) {
-            $taskStatus->delete();
-            flash(__('Task Status has been deleted.'))->success();
-        } else {
-            flash(__('Task Status doesn\'t exist!'))->error();
-        }
+        $taskStatus = TaskStatus::findOrFail($id);
+        $taskStatus->delete();
+        flash(__('messages.deleled', ['name' => 'Task Status']))->success();
         return redirect()->route('task_statuses.index');
     }
 }

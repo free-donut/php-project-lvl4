@@ -41,11 +41,11 @@ class UserController extends Controller
     public function edit(int $id)
     {
         if (!Auth::check()) {
-            flash(__('Please log in or register.'))->error();
+            flash(__('messages.not_logged'))->error();
             return redirect()->route('main');
         }
         if ($id !== Auth::id()) {
-            flash(__('Permission denied.'))->error();
+            flash(__('messages.denied.'))->error();
             return redirect()->route('main');
         }
 
@@ -62,11 +62,6 @@ class UserController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        if (!Auth::check()) {
-            flash(__('Please log in or register.'))->error();
-            return redirect()->route('main');
-        }
-
         $user = User::findOrFail($id);
 
         if (!Hash::check($request->password, $user->password)) {
@@ -80,7 +75,7 @@ class UserController extends Controller
         ]);
         $user->fill($data);
         $user->save();
-        flash(__('Your account has been updated.'))->success();
+        flash(__('messages.updated', ['name' => 'account']))->success();
         return redirect()->route('main');
     }
 
@@ -92,19 +87,12 @@ class UserController extends Controller
      */
     public function destroy(int $id)
     {
-        if (!Auth::check()) {
-            flash(__('Please log in or register.'))->error();
-        } elseif ($id === Auth::id()) {
-            $user = User::find($id);
-            if ($user) {
-                $user->delete();
-                flash(__('Your account has been deleted.'))->success();
-                //flash('Your account has been deleted!')->success();
-            } else {
-                flash(__('User doesn\'t exist!'))->error();
-            }
+        if ($id === Auth::id()) {
+            $user = User::findOrFail($id);
+            $user->delete();
+            flash(__('messages.deleled', ['name' => 'account']))->success();
         } else {
-            flash(__('Permission denied!'))->error();
+            flash(__('messages.denied!'))->error();
         }
         return redirect()->route('main');
     }
