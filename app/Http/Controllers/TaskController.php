@@ -16,10 +16,29 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tasks = Task::orderBy('created_at', 'desc')->paginate(5);
-        return view('task.index', compact('tasks'));
+        if ($request->filter) {
+            $filter = $request->filter;
+            $tasks = Task::query();
+
+            if ($filter['status_id']) {
+                $tasks->where('status_id', $filter['status_id']);
+            } elseif ($filter['creator_id']) {
+                $tasks->orWhere('creator_id', $filter['creator_id']);
+            } elseif ($filter['assigned_to_id']) {
+                $tasks->orWhere('assigned_to_id', $filter['assigned_to_id']);
+            }
+
+            $tasks = $tasks->orderBy('created_at', 'desc')->paginate(5);
+        } else {
+            $tasks = Task::orderBy('created_at', 'desc')->paginate(5);
+        }
+
+        $statuses = TaskStatus::all();
+        $creators = User::orderBy('name', 'asc')->get();
+        $assignees = User::orderBy('name', 'asc')->get();
+        return view('task.index', compact('tasks', 'statuses', 'creators', 'assignees'));
     }
 
     /**

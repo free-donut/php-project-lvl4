@@ -9,6 +9,34 @@
     @auth
         <a class="btn btn-primary btn-lg" href="{{ route('tasks.create') }}" role="button">{{ __('Add new task') }}</a>
     @endauth
+    <!-- filter form-->
+    <div>
+            <form method="GET" action="{{ route('tasks.index') }}" accept-charset="UTF-8" class="form-inline">
+            <select class="form-control mr-2" name="filter[status_id]">
+                <option value="">{{ __('Status') }}</option>
+                @foreach ($statuses as $status)
+                <!-- <option selected="selected" value="">Status</option>-->
+                    <option value="{{ $status->id }}">{{ $status->name }}</option>
+                @endforeach
+            </select>
+            
+            <select class="form-control mr-2" name="filter[creator_id]">
+                <option value="">{{ __('Creator') }}</option>
+                @foreach ($creators as $creator)
+                    <option value="{{ $creator->id }}">{{ $creator->name }}</option>
+                @endforeach
+            </select>
+            
+            <select class="form-control mr-2" name="filter[assigned_to_id]">
+                <option value="">{{ __('Assignee') }}</option>
+                @foreach ($assignees as $assignee)
+                    <option value="{{ $assignee->id }}">{{ $assignee->name }}</option>
+                @endforeach
+            </select>
+                <input class="btn btn-outline-primary mr-2" type="submit" value="Apply">
+            </form>
+        </div>
+    <!-- end filter form-->
     <table class="table">
         <thead>
             <tr>
