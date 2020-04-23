@@ -33,7 +33,7 @@
                             <label for="description" class="col-md-4 col-form-label text-md-right">{{ __('Description') }}</label>
 
                             <div class="col-md-6">
-                                <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" required autocomplete="description" autofocus>{{ old('description') }}</textarea>
+                                <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" autocomplete="description" autofocus>{{ old('description') }}</textarea>
 
                                 @error('description')
                                     <span class="invalid-feedback" role="alert">
@@ -48,7 +48,11 @@
                             <div class="col-md-6">
                                 <select class="form-control" name="status_id" id="status">
                                     @foreach ($statuses as $status)
-                                        <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                        @if($status->id == $defaultStatus->id)
+                                            <option value="{{ $status->id }}" selected="selected">{{ $status->name }}</option>
+                                        @else
+                                            <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                        @endif
                                     @endforeach
                                 </select>
 

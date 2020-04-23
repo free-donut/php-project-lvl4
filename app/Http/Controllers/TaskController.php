@@ -19,7 +19,6 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = Task::orderBy('created_at', 'desc')->paginate(5);
-
         return view('task.index', compact('tasks'));
     }
 
@@ -37,7 +36,8 @@ class TaskController extends Controller
         $tags = Tag::all();
         $statuses = TaskStatus::all();
         $assignees = User::all();
-        return view('task.create', compact('statuses', 'assignees', 'tags'));
+        $defaultStatus = TaskStatus::where('name', '=', 'new')->first();
+        return view('task.create', compact('statuses', 'assignees', 'tags', 'defaultStatus'));
     }
 
     /**
