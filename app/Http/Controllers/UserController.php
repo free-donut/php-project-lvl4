@@ -48,9 +48,9 @@ class UserController extends Controller
             flash(__('messages.denied.'))->error();
             return redirect()->route('main');
         }
-
+        $genders = ['male', 'female'];
         $user = User::findOrFail($id);
-        return view('user.edit', compact('user'));
+        return view('user.edit', compact('user', 'genders'));
     }
 
     /**

@@ -15,7 +15,7 @@ return [
 
     'not_logged' => 'Please log in or register.',
     'deleled' => 'The :name has been deleted.',
-    'udpated' => 'The :name has been updated.',
+    'updated' => 'The :name has been updated.',
     'not_exist' => 'The :name doesn\'t exist!',
     'denied' => 'Permission denied.',
     'saved' => 'The :name has been saved.',
