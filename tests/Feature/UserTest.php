@@ -29,7 +29,7 @@ class UserTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        $response = $this->get(route('users.show', ['user' => $user->id]));
+        $response = $this->actingAs($user)->get(route('users.show', ['user' => $user->id]));
 
         $response->assertStatus(200);
     }
@@ -65,6 +65,7 @@ class UserTest extends TestCase
         $params = [
             'name' => 'Ron',
             'email' => 'ron@weasley.com',
+            'gender' => 'male',
             'password' => $password
         ];
 
@@ -89,6 +90,7 @@ class UserTest extends TestCase
         $params = [
             'name' => 'Hermione',
             'email' => 'alohomora',
+            'gender' => 'male',
             'password' => $password
         ];
 

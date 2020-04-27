@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use App\User;
 
 class UserController extends Controller
@@ -29,7 +30,11 @@ class UserController extends Controller
     public function show(int $id)
     {
         $user = User::findOrFail($id);
-        return view('user.show', compact('user'));
+        if ($user->id === Auth::id()) {
+            return view('user.show', compact('user'));
+        }
+        flash(__('messages.denied'))->error();
+        return redirect()->route('main');
     }
 
     /**
@@ -45,10 +50,10 @@ class UserController extends Controller
             return redirect()->route('main');
         }
         if ($id !== Auth::id()) {
-            flash(__('messages.denied.'))->error();
+            flash(__('messages.denied'))->error();
             return redirect()->route('main');
         }
-        $genders = ['male', 'female'];
+        $genders = ['male', 'female', 'neutral'];
         $user = User::findOrFail($id);
         return view('user.edit', compact('user', 'genders'));
     }
@@ -72,6 +77,9 @@ class UserController extends Controller
         $data = $this->validate($request, [
             'name' => 'required|unique:users,name,' . $id,
             'email' => 'required|max:256|email',
+            'gender' => 'required|string',
+            'birthdate' => 'nullable|date',
+            'phone' => 'nullable|string|size:12',
         ]);
         $user->fill($data);
         $user->save();
@@ -92,7 +100,7 @@ class UserController extends Controller
             $user->delete();
             flash(__('messages.deleled', ['name' => 'account']))->success();
         } else {
-            flash(__('messages.denied!'))->error();
+            flash(__('messages.denied'))->error();
         }
         return redirect()->route('main');
     }

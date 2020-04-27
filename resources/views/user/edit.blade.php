@@ -44,21 +44,45 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <label for="phone" class="col-md-4 col-form-label text-md-right">{{ __('Phone number') }}</label>
+                            <div class="col-md-6">
+                                <input id="birthdate" type="tel" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') ?? $user->phone}}" autocomplete="phone" placeholder="+7XXXXXXXXXX">
+                                
+                                @error('phone')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
                         <!-- gender -->
                         <div class="form-group row">
-                            <label for="gender" class="col-md-4 col-form-label text-md-right">{{ __('Task Status') }}</label>
+                            <label for="gender" class="col-md-4 col-form-label text-md-right">{{ __('Gender') }}</label>
                             <div class="col-md-6">
                                 <select class="form-control" name="gender" id="gender">
-                                    @foreach ($genders as $gender)
-                                        @if($gender == $user->gender)
-                                            <option value="{{ $gender }}" selected="selected">{{ $gender }}</option>
+                                    @foreach($genders as $gender)
+                                        @if($user->gender === $gender)
+                                            <option value="{{ $gender }}" selected="selected">{{ __($gender) }}</option>
                                         @else
-                                            <option value="{{ $gender }}">{{ $gender }}</option>
+                                            <option value="{{ $gender }}">{{ __($gender) }}</option>
                                         @endif
                                     @endforeach
                                 </select>
 
                                 @error('gender')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="birthdate" class="col-md-4 col-form-label text-md-right">{{ __('Birth Date') }}</label>
+                            <div class="col-md-6">
+                                <input id="birthdate" type="date" class="form-control @error('birthdate') is-invalid @enderror" name="birthdate" value="{{ old('birthdate') ?? $user->birthdate }}" autocomplete="birthdate" max="{{ date('Y-m-d') }}">
+                                @error('birthdate')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>

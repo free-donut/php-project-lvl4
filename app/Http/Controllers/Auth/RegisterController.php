@@ -52,8 +52,10 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'gender' => ['nullable', 'string', Rule::in(['male', 'female', 'neutral'])],
+            'birthdate' => ['nullable', 'date'],
+            'phone' => ['nullable', 'string', 'size:12'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'gender' => ['required', 'string', Rule::in(['male', 'female'])],
         ]);
     }
 
@@ -68,8 +70,16 @@ class RegisterController extends Controller
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
             'gender' => $data['gender'],
+            'birthdate' => $data['birthdate'],
+            'phone' => $data['phone'],
+            'password' => Hash::make($data['password']),
         ]);
+    }
+
+    public function showRegistrationForm()
+    {
+        $genders = ['male', 'female', 'neutral'];
+        return view('auth.register', compact('genders'));
     }
 }
