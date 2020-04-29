@@ -16,7 +16,8 @@
       <dt class="col-sm-3">{{ __('Birth Date') }}:</dt>
       <dd class="col-sm-9">{{ $user->birthdate ?? __('Unfilled') }}</dd>
     </dl>
-    <a class="btn btn-primary btn-lg" href="{{ route('users.edit', $user) }}" role="button" >{{ __('Edit') }}</a>
+    <a class="btn btn-primary" href="{{ route('users.destroy', $user) }}" data-confirm="are you sure?" data-method="delete" rel="nofollow"  role="button">{{ __('Remove') }}</a>
+    <a class="btn btn-primary" href="{{ route('users.edit', $user) }}" role="button" >{{ __('Edit') }}</a>
   @endauth
 </div>
 @endsection

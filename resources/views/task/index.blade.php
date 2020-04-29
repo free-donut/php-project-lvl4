@@ -6,13 +6,11 @@
     <div>
         @include('flash::message')
     </div>
-    @auth
-        <a class="btn btn-primary btn-lg" href="{{ route('tasks.create') }}" role="button">{{ __('Add new task') }}</a>
-    @endauth
+    
     <!-- filter form-->
-    <div>
-            <form method="GET" action="{{ route('tasks.index') }}" accept-charset="UTF-8" class="form-inline">
-            <select class="form-control mr-2" name="filter[status_id]">
+    <div class="d-flex mb-2">
+        <form method="GET" action="{{ route('tasks.index') }}" accept-charset="UTF-8" class="form-inline">
+            <select class="form-control" name="filter[status_id]">
                 <option value="">{{ __('Status') }}</option>
                 @foreach ($statuses as $status)
                 <!-- <option selected="selected" value="">Status</option>-->
@@ -28,14 +26,17 @@
             </select>
             
             <select class="form-control mr-2" name="filter[assigned_to_id]">
-                <option value="">{{ __('Assignee') }}</option>
-                @foreach ($assignees as $assignee)
-                    <option value="{{ $assignee->id }}">{{ $assignee->name }}</option>
-                @endforeach
-            </select>
-                <input class="btn btn-outline-primary mr-2" type="submit" value="Apply">
-            </form>
-        </div>
+            <option value="">{{ __('Assignee') }}</option>
+            @foreach ($assignees as $assignee)
+                <option value="{{ $assignee->id }}">{{ $assignee->name }}</option>
+            @endforeach
+        </select>
+                <input class="btn btn-outline-primary" type="submit" value="Apply">
+        </form>
+        @auth
+            <a class="btn btn-primary ml-auto" href="{{ route('tasks.create') }}" role="button">{{ __('Add new task') }}</a>
+        @endauth
+    </div>
     <!-- end filter form-->
     <table class="table">
         <thead>

@@ -30,9 +30,9 @@ class TaskController extends Controller
                 $tasks->orWhere('assigned_to_id', $filter['assigned_to_id']);
             }
 
-            $tasks = $tasks->orderBy('created_at', 'desc')->paginate(5);
+            $tasks = $tasks->orderBy('created_at', 'desc')->paginate(10);
         } else {
-            $tasks = Task::orderBy('created_at', 'desc')->paginate(5);
+            $tasks = Task::orderBy('created_at', 'desc')->paginate(10);
         }
 
         $statuses = TaskStatus::all();

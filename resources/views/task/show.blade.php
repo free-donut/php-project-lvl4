@@ -26,9 +26,9 @@
     </dl>
     @auth
         @if($task->creator->id == Auth::id())
-            <a class="btn btn-primary btn-lg" href="{{ route('tasks.destroy', $task) }}" data-confirm="are you sure?" data-method="delete" rel="nofollow"  role="button">{{ __('Remove') }}</a>
+            <a class="btn btn-primary" href="{{ route('tasks.destroy', $task) }}" data-confirm="are you sure?" data-method="delete" rel="nofollow"  role="button">{{ __('Remove') }}</a>
         @endif
-        <a class="btn btn-primary btn-lg" href="{{ route('tasks.edit', $task) }}" role="button" >{{ __('Edit') }}</a>
+        <a class="btn btn-primary" href="{{ route('tasks.edit', $task) }}" role="button" >{{ __('Edit') }}</a>
     @endauth
 </div>
 @endsection
