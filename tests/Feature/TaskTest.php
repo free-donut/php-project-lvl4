@@ -80,6 +80,6 @@ class TaskTest extends TestCase
         
         $response = $this->actingAs($task->creator)->delete(route('tasks.destroy', $task));
         $response->assertStatus(302);
-        $this->assertDeleted($task);
+        $this->assertSoftDeleted($task);
     }
 }

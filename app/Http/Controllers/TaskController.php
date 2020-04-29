@@ -54,7 +54,7 @@ class TaskController extends Controller
         }
         $tags = Tag::all();
         $statuses = TaskStatus::all();
-        $assignees = User::all();
+        $assignees = User::orderBy('name', 'asc')->get();
         $defaultStatus = TaskStatus::where('name', '=', 'new')->first();
         return view('task.create', compact('statuses', 'assignees', 'tags', 'defaultStatus'));
     }
@@ -120,7 +120,7 @@ class TaskController extends Controller
         }
         $tags = Tag::all();
         $statuses = TaskStatus::all();
-        $assignees = User::all();
+        $assignees = User::orderBy('name', 'asc')->get();
         $task = Task::findOrFail($id);
         $selectedTags = $task->tags()->get()->pluck('id')->toArray();
         return view('task.edit', compact('task', 'statuses', 'assignees', 'tags', 'selectedTags'));

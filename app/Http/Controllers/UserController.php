@@ -97,6 +97,13 @@ class UserController extends Controller
     {
         if ($id === Auth::id()) {
             $user = User::findOrFail($id);
+            $creatorTasks = $user->creatorTasks()->get();
+            foreach ($user->creatorTasks()->get() as $task) {
+                $task->delete();
+            }
+            foreach ($user->assignedTasks()->get() as $task) {
+                $task->delete();
+            }
             $user->delete();
             flash(__('messages.deleled', ['name' => 'account']))->success();
         } else {
