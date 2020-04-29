@@ -8,6 +8,7 @@ use App\Task;
 use App\Tag;
 use App\TaskStatus;
 use App\User;
+use Illuminate\Database\Eloquent\Builder;
 
 class TaskController extends Controller
 {
@@ -28,6 +29,10 @@ class TaskController extends Controller
                 $tasks->orWhere('creator_id', $filter['creator_id']);
             } elseif ($filter['assigned_to_id']) {
                 $tasks->orWhere('assigned_to_id', $filter['assigned_to_id']);
+            } elseif ($filter['tag_id']) {
+                $tasks->orWhereHas('tags', function (Builder $query) use ($filter) {
+                    $query->where('tag_id', $filter['tag_id']);
+                });
             }
 
             $tasks = $tasks->orderBy('created_at', 'desc')->paginate(10);
@@ -38,7 +43,8 @@ class TaskController extends Controller
         $statuses = TaskStatus::all();
         $creators = User::orderBy('name', 'asc')->get();
         $assignees = User::orderBy('name', 'asc')->get();
-        return view('task.index', compact('tasks', 'statuses', 'creators', 'assignees'));
+        $tags = Tag::orderBy('name', 'asc')->get();
+        return view('task.index', compact('tasks', 'statuses', 'creators', 'assignees', 'tags'));
     }
 
     /**
@@ -139,7 +145,7 @@ class TaskController extends Controller
 
         $data = $this->validate($request, [
             'name' => 'required|unique:tasks,name,' . $id,
-            'description' => 'required|max:1000',
+            'description' => 'max:1000',
             'status_id' => 'required|exists:task_statuses,id',
             'assigned_to_id' => 'required|exists:users,id',
         ]);

@@ -10,11 +10,17 @@
     <!-- filter form-->
     <div class="d-flex mb-2">
         <form method="GET" action="{{ route('tasks.index') }}" accept-charset="UTF-8" class="form-inline">
-            <select class="form-control" name="filter[status_id]">
+            <select class="form-control mr-2" name="filter[status_id]">
                 <option value="">{{ __('Status') }}</option>
                 @foreach ($statuses as $status)
-                <!-- <option selected="selected" value="">Status</option>-->
                     <option value="{{ $status->id }}">{{ $status->name }}</option>
+                @endforeach
+            </select>
+
+            <select class="form-control mr-2" name="filter[tag_id]">
+                <option value="">{{ __('Tag') }}</option>
+                @foreach ($tags as $tag)
+                    <option value="{{ $tag->id }}">{{ $tag->name }}</option>
                 @endforeach
             </select>
             
@@ -31,7 +37,8 @@
                 <option value="{{ $assignee->id }}">{{ $assignee->name }}</option>
             @endforeach
         </select>
-                <input class="btn btn-outline-primary" type="submit" value="Apply">
+                <input class="btn btn-outline-primary ml-auto mr-2" type="submit" value="{{ __('Apply') }}">
+                <input class="btn btn-outline-primary ml-auto mr-2" type="reset" value="{{__('Reset') }}">
         </form>
         @auth
             <a class="btn btn-primary ml-auto" href="{{ route('tasks.create') }}" role="button">{{ __('Add new task') }}</a>
