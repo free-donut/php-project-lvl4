@@ -13,7 +13,7 @@ $factory->define(Task::class, function (Faker $faker) {
     return [
         'name' => $faker->unique()->word,
         'description' => $faker->sentence($nbWords = 6, $variableNbWords = true),
-        'status_id' => TaskStatus::where('name' ,'=' ,'new')->value('id'),
+        'status_id' => $faker->randomElement(TaskStatus::where('id' ,'>' ,0)->pluck('id')->toArray()),
         'creator_id' => $faker->randomElement(User::where('id' ,'>' ,0)->pluck('id')->toArray()),
         'assigned_to_id' => $faker->randomElement(User::where('id' ,'>' ,0)->pluck('id')->toArray()),
     ];

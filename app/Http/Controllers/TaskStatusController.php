@@ -30,7 +30,8 @@ class TaskStatusController extends Controller
             flash(__('messages.not_logged'))->error();
             return redirect()->route('main');
         }
-        return view('task_status.create');
+        $taskStatus = new TaskStatus();
+        return view('task_status.create', compact('taskStatus'));
     }
     
 

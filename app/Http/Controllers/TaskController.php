@@ -44,6 +44,11 @@ class TaskController extends Controller
         $creators = User::orderBy('name', 'asc')->get();
         $assignees = User::orderBy('name', 'asc')->get();
         $tags = Tag::orderBy('name', 'asc')->get();
+
+        $tags = Tag::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
+        $statuses = TaskStatus::pluck('name', 'id')->toArray();
+        $assignees = User::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
+        $creators = User::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
         return view('task.index', compact('tasks', 'statuses', 'creators', 'assignees', 'tags'));
     }
 
@@ -58,11 +63,12 @@ class TaskController extends Controller
             flash(__('messages.not_logged'))->error();
             return redirect()->route('main');
         }
+        $task = new Task();
         $tags = Tag::all();
-        $statuses = TaskStatus::all();
-        $assignees = User::orderBy('name', 'asc')->get();
-        $defaultStatus = TaskStatus::where('name', '=', 'new')->first();
-        return view('task.create', compact('statuses', 'assignees', 'tags', 'defaultStatus'));
+        $statuses = TaskStatus::pluck('name', 'id')->toArray();
+        $assignees = User::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
+
+        return view('task.create', compact('task', 'statuses', 'assignees', 'tags'));
     }
 
     /**
@@ -78,21 +84,20 @@ class TaskController extends Controller
             'description' => 'max:1000',
             'status_id' => 'required|exists:task_statuses,id',
             'assigned_to_id' => 'required|exists:users,id',
+            'tag' => 'max:255',
         ]);
 
         $creator = Auth::user();
         $task = $creator->creatorTasks()->make($validatedParams);
         $task->save();
-        if ($request->tags) {
-            $validatedTags = $this->validate($request, [
-                'tags.*' => 'exists:tags,id',
-            ]);
-            $task->tags()->sync($validatedTags['tags']);
-        }
-        if ($request->newTag) {
-            $newTag = new Tag();
-            $newTag->name = $request->newTag;
-            $task->tags()->attach($newTag);
+
+        if ($request->tag) {
+            $tags = array_map('trim', explode(',', $request->tag));
+
+            foreach ($tags as $tagName) {
+                $tag = Tag::firstOrCreate(['name' => $tagName]);
+                $task->tags()->attach($tag);
+            }
         }
 
         flash(__('messages.saved', ['name' => 'Task']))->success();
@@ -124,12 +129,12 @@ class TaskController extends Controller
             flash(__('messages.not_logged'))->error();
             return redirect()->route('main');
         }
-        $tags = Tag::all();
-        $statuses = TaskStatus::all();
-        $assignees = User::orderBy('name', 'asc')->get();
         $task = Task::findOrFail($id);
-        $selectedTags = $task->tags()->get()->pluck('id')->toArray();
-        return view('task.edit', compact('task', 'statuses', 'assignees', 'tags', 'selectedTags'));
+        $statuses = TaskStatus::pluck('name', 'id')->toArray();
+        $assignees = User::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
+        $tags = $task->tags()->get()->pluck('name')->toArray();
+        $tag = implode(', ', $tags);
+        return view('task.edit', compact('task', 'statuses', 'assignees', 'tag'));
     }
 
     /**
@@ -148,21 +153,20 @@ class TaskController extends Controller
             'description' => 'max:1000',
             'status_id' => 'required|exists:task_statuses,id',
             'assigned_to_id' => 'required|exists:users,id',
+            'tag' => 'max:255',
         ]);
 
         $task->fill($data);
         $task->save();
-        if ($request->tags) {
-            $validatedTags = $this->validate($request, [
-                'tags.*' => 'exists:tags,id',
-            ]);
-            $task->tags()->sync($validatedTags['tags']);
+        if ($request->tag) {
+            $tags = array_map('trim', explode(',', $request->tag));
+
+            foreach ($tags as $tagName) {
+                $tag = Tag::firstOrCreate(['name' => $tagName]);
+                $task->tags()->attach($tag);
+            }
         }
-        if ($request->newTag) {
-            $newTag = new Tag();
-            $newTag->name = $request->newTag;
-            $task->tags()->attach($newTag);
-        }
+
         flash(__('messages.updated', ['name' => 'Task']))->success();
 
         return redirect()->route('tasks.index');

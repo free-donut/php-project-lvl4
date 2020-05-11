@@ -6,45 +6,21 @@
     <div>
         @include('flash::message')
     </div>
-    
-    <!-- filter form-->
-    <div class="d-flex mb-2">
-        <form method="GET" action="{{ route('tasks.index') }}" accept-charset="UTF-8" class="form-inline">
-            <select class="form-control mr-2" name="filter[status_id]">
-                <option value="">{{ __('Status') }}</option>
-                @foreach ($statuses as $status)
-                    <option value="{{ $status->id }}">{{ $status->name }}</option>
-                @endforeach
-            </select>
 
-            <select class="form-control mr-2" name="filter[tag_id]">
-                <option value="">{{ __('Tag') }}</option>
-                @foreach ($tags as $tag)
-                    <option value="{{ $tag->id }}">{{ $tag->name }}</option>
-                @endforeach
-            </select>
-            
-            <select class="form-control mr-2" name="filter[creator_id]">
-                <option value="">{{ __('Creator') }}</option>
-                @foreach ($creators as $creator)
-                    <option value="{{ $creator->id }}">{{ $creator->name }}</option>
-                @endforeach
-            </select>
-            
-            <select class="form-control mr-2" name="filter[assigned_to_id]">
-            <option value="">{{ __('Assignee') }}</option>
-            @foreach ($assignees as $assignee)
-                <option value="{{ $assignee->id }}">{{ $assignee->name }}</option>
-            @endforeach
-        </select>
-                <input class="btn btn-outline-primary ml-auto mr-2" type="submit" value="{{ __('Apply') }}">
-                <input class="btn btn-outline-primary ml-auto mr-2" type="reset" value="{{__('Reset') }}">
-        </form>
+    <div class="d-flex mb-2">
+        {{Form::open(['url' => route('tasks.index'), 'method' => 'GET', 'class' => 'form-inline'])}}
+            {{ Form::select('filter[status_id]', $statuses, null, ['class' => 'form-control mr-2', 'placeholder' => __('Status')]) }}
+            {{ Form::select('filter[tag_id]', $tags, null, ['class' => 'form-control mr-2', 'placeholder' => __('Tag')]) }}
+            {{ Form::select('filter[creator_id]', $creators, null, ['class' => 'form-control mr-2', 'placeholder' => __('Creator')]) }}
+            {{ Form::select('filter[assigned_to_id]', $creators, null, ['class' => 'form-control mr-2', 'placeholder' => __('Assignee')]) }}
+            {{Form::submit(__('Apply'), ['class' => 'btn btn-outline-primary ml-auto mr-2'])}}
+            {{Form::reset(__('Reset'), ['class' => 'btn btn-outline-primary ml-auto mr-2'])}}
+        {{Form::close()}}
         @auth
             <a class="btn btn-primary ml-auto" href="{{ route('tasks.create') }}" role="button">{{ __('Add new task') }}</a>
         @endauth
     </div>
-    <!-- end filter form-->
+
     <table class="table">
         <thead>
             <tr>
