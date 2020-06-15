@@ -20,7 +20,14 @@ class TaskController extends Controller
     public function index(Request $request)
     {
         if ($request->filter) {
-            $filter = $request->filter;
+            $validatedParams = $this->validate($request, [
+                'filter.status_id' => 'nullable|exists:task_statuses,id',
+                'filter.creator_id' => 'nullable|exists:users,id',
+                'filter.assigned_to_id' => 'nullable|exists:users,id',
+                'filter.tag_id' => 'nullable|exists:tags,id',
+            ]);
+
+            $filter = $validatedParams['filter'];
             $tasks = Task::query();
 
             if ($filter['status_id']) {
@@ -40,11 +47,6 @@ class TaskController extends Controller
             $tasks = Task::orderBy('created_at', 'desc')->paginate(10);
         }
 
-        $statuses = TaskStatus::all();
-        $creators = User::orderBy('name', 'asc')->get();
-        $assignees = User::orderBy('name', 'asc')->get();
-        $tags = Tag::orderBy('name', 'asc')->get();
-
         $tags = Tag::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
         $statuses = TaskStatus::pluck('name', 'id')->toArray();
         $assignees = User::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
@@ -63,12 +65,12 @@ class TaskController extends Controller
             flash(__('messages.not_logged'))->error();
             return redirect()->route('main');
         }
+
         $task = new Task();
-        $tags = Tag::all();
         $statuses = TaskStatus::pluck('name', 'id')->toArray();
         $assignees = User::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
 
-        return view('task.create', compact('task', 'statuses', 'assignees', 'tags'));
+        return view('task.create', compact('task', 'statuses', 'assignees'));
     }
 
     /**
@@ -148,7 +150,7 @@ class TaskController extends Controller
     {
         $task = Task::findOrFail($id);
 
-        $data = $this->validate($request, [
+        $validatedParams = $this->validate($request, [
             'name' => 'required|unique:tasks,name,' . $id,
             'description' => 'max:1000',
             'status_id' => 'required|exists:task_statuses,id',
@@ -156,7 +158,7 @@ class TaskController extends Controller
             'tag' => 'max:255',
         ]);
 
-        $task->fill($data);
+        $task->fill($validatedParams);
         $task->save();
         if ($request->tag) {
             $tags = array_map('trim', explode(',', $request->tag));
