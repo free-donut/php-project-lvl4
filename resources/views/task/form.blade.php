@@ -77,17 +77,17 @@
 </div>
 
 <div class="form-group row">
-    {{ Form::label('tag', __('Tags'), ['class' => 'col-md-4 col-form-label text-md-right']) }}
+    {{ Form::label('tagData', __('Tags'), ['class' => 'col-md-4 col-form-label text-md-right']) }}
     <div class="col-md-6">
         {{ 
             Form::text(
-                'tag', 
-                $tag ?? old('tag'), 
-                ['class' => 'form-control'. ( $errors->has('tag') ? ' is-invalid' : ''), 'placeholder' => __('Enter tags separated by commas')]
+                'tagData', 
+                $tagData ?? old('tagData'), 
+                ['class' => 'form-control'. ( $errors->has('tagData') ? ' is-invalid' : ''), 'placeholder' => __('Enter tags separated by commas')]
             ) 
         }}
 
-        @error('tag')
+        @error('tagData')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
              </span>

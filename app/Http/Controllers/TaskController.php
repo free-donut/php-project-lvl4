@@ -27,18 +27,18 @@ class TaskController extends Controller
                 'filter.tag_id' => 'nullable|exists:tags,id',
             ]);
 
-            $filter = $validatedParams['filter'];
+            $filterParams = $validatedParams['filter'];
             $tasks = Task::query();
 
-            if ($filter['status_id']) {
-                $tasks->where('status_id', $filter['status_id']);
-            } elseif ($filter['creator_id']) {
-                $tasks->orWhere('creator_id', $filter['creator_id']);
-            } elseif ($filter['assigned_to_id']) {
-                $tasks->orWhere('assigned_to_id', $filter['assigned_to_id']);
-            } elseif ($filter['tag_id']) {
-                $tasks->orWhereHas('tags', function (Builder $query) use ($filter) {
-                    $query->where('tag_id', $filter['tag_id']);
+            if ($filterParams['status_id']) {
+                $tasks->where('status_id', $filterParams['status_id']);
+            } elseif ($filterParams['creator_id']) {
+                $tasks->orWhere('creator_id', $filterParams['creator_id']);
+            } elseif ($filterParams['assigned_to_id']) {
+                $tasks->orWhere('assigned_to_id', $filterParams['assigned_to_id']);
+            } elseif ($filterParams['tag_id']) {
+                $tasks->orWhereHas('tags', function (Builder $query) use ($filterParams) {
+                    $query->where('tag_id', $filterParams['tag_id']);
                 });
             }
 
@@ -86,15 +86,15 @@ class TaskController extends Controller
             'description' => 'max:1000',
             'status_id' => 'required|exists:task_statuses,id',
             'assigned_to_id' => 'required|exists:users,id',
-            'tag' => 'max:255',
+            'tagData' => 'max:255',
         ]);
 
         $creator = Auth::user();
         $task = $creator->creatorTasks()->make($validatedParams);
         $task->save();
 
-        if ($request->tag) {
-            $tags = array_map('trim', explode(',', $request->tag));
+        if ($request->tagData) {
+            $tags = array_map('trim', explode(',', $request->tagData));
 
             foreach ($tags as $tagName) {
                 $tag = Tag::firstOrCreate(['name' => $tagName]);
@@ -135,8 +135,8 @@ class TaskController extends Controller
         $statuses = TaskStatus::pluck('name', 'id')->toArray();
         $assignees = User::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
         $tags = $task->tags()->get()->pluck('name')->toArray();
-        $tag = implode(', ', $tags);
-        return view('task.edit', compact('task', 'statuses', 'assignees', 'tag'));
+        $tagData = implode(', ', $tags);
+        return view('task.edit', compact('task', 'statuses', 'assignees', 'tagData'));
     }
 
     /**
@@ -155,13 +155,13 @@ class TaskController extends Controller
             'description' => 'max:1000',
             'status_id' => 'required|exists:task_statuses,id',
             'assigned_to_id' => 'required|exists:users,id',
-            'tag' => 'max:255',
+            'tagData' => 'max:255',
         ]);
 
         $task->fill($validatedParams);
         $task->save();
-        if ($request->tag) {
-            $tags = array_map('trim', explode(',', $request->tag));
+        if ($request->tagData) {
+            $tags = array_map('trim', explode(',', $request->tagData));
 
             foreach ($tags as $tagName) {
                 $tag = Tag::firstOrCreate(['name' => $tagName]);

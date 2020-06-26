@@ -21,8 +21,8 @@ class TaskStatusTest extends TestCase
     public function testIndex()
     {
         $this->seed();
-        $response = $this->get(route('task_statuses.index'));
 
+        $response = $this->get(route('task_statuses.index'));
         $response->assertStatus(200);
     }
 
@@ -31,7 +31,6 @@ class TaskStatusTest extends TestCase
         $user = factory(User::class)->create();
 
         $response = $this->actingAs($user)->get(route('task_statuses.create'));
-
         $response->assertStatus(200);
     }
 
@@ -46,14 +45,6 @@ class TaskStatusTest extends TestCase
         $this->assertDatabaseHas('task_statuses', $params);
     }
 
-    public function testDestroy()
-    {
-        $user = factory(User::class)->create();
-        $taskStatus = factory(TaskStatus::class)->create();
-        $response = $this->actingAs($user)->delete(route('task_statuses.destroy', $taskStatus));
-        $response->assertStatus(302);
-        $this->assertDeleted($taskStatus);
-    }
 
     public function testEdit()
     {
@@ -61,7 +52,6 @@ class TaskStatusTest extends TestCase
         $taskStatus = factory(TaskStatus::class)->create();
 
         $response = $this->actingAs($user)->get(route('task_statuses.edit', $taskStatus));
-
         $response->assertStatus(200);
     }
 
@@ -69,12 +59,22 @@ class TaskStatusTest extends TestCase
     {
         $user = factory(User::class)->create();
         $taskStatus = factory(TaskStatus::class)->create();
-
         $params = ['name' => 'Draco'];
 
         $response = $this->actingAs($user)->patch(route('task_statuses.update', $taskStatus), $params);
         $response->assertStatus(302);
 
         $this->assertDatabaseHas('task_statuses', $params);
+    }
+
+    public function testDestroy()
+    {
+        $user = factory(User::class)->create();
+        $taskStatus = factory(TaskStatus::class)->create();
+
+        $response = $this->actingAs($user)->delete(route('task_statuses.destroy', $taskStatus));
+        $response->assertStatus(302);
+
+        $this->assertDeleted($taskStatus);
     }
 }

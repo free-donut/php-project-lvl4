@@ -16,8 +16,8 @@ class TaskTest extends TestCase
     public function testIndex()
     {
         $this->seed();
-        $response = $this->get(route('tasks.index'));
 
+        $response = $this->get(route('tasks.index'));
         $response->assertStatus(200);
     }
 
@@ -26,7 +26,6 @@ class TaskTest extends TestCase
         $user = factory(User::class)->create();
 
         $response = $this->actingAs($user)->get(route('tasks.create'));
-
         $response->assertStatus(200);
     }
 
@@ -35,8 +34,6 @@ class TaskTest extends TestCase
         $this->seed();
         $params = factory(Task::class)->make()->toArray();
         $user = User::find($params['creator_id']);
-
-        //$params2 = $params + ['tags' => ['1', '2']];
 
         $response = $this->actingAs($user)->post(route('tasks.store'), $params);
         $response->assertStatus(302);
@@ -48,6 +45,7 @@ class TaskTest extends TestCase
     {
         $this->seed();
         $task = factory(Task::class)->create();
+
         $response = $this->get(route('tasks.show', $task));
         $response->assertStatus(200);
     }
@@ -80,6 +78,7 @@ class TaskTest extends TestCase
         
         $response = $this->actingAs($task->creator)->delete(route('tasks.destroy', $task));
         $response->assertStatus(302);
+        
         $this->assertSoftDeleted($task);
     }
 }
