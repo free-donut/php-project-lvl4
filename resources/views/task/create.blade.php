@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Create new Task status') }}</div>
+                <div class="card-header">{{ __('Create new Task') }}</div>
 
                 <div>
                     @include('flash::message')

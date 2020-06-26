@@ -50,6 +50,14 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('locale', ['locale' => 'en']) }}">EN</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('locale', ['locale' => 'ru']) }}">RU</a>
+                            </li>
+                        </ul>
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
