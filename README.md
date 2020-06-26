@@ -9,3 +9,12 @@
 https://powerful-wildwood-00823.herokuapp.com/
 
 
+### Description:
+
+Simple implementation of typical task manager. Main features:
+
+Registration
+Authentication
+Task management
+Filtration
+

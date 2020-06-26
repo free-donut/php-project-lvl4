@@ -27,7 +27,7 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+                    {{ config('app.name', 'Main Page') }}
                 </a>
                 <a class="navbar-brand" href="{{ route('users.index') }}">
                     {{ __('Users') }}
