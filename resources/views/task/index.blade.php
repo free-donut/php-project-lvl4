@@ -3,10 +3,6 @@
 @section('content')
 <div class="container">
     <h3>{{ __('List of tasks') }}</h3>
-    <div>
-        @include('flash::message')
-    </div>
-
     @if ($errors->any())
        @foreach ($errors->all() as $error)
             <div class="alert alert-danger" role="alert">{{ $error }}</div>

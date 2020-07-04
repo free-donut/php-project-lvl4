@@ -3,9 +3,6 @@
 @section('content')
 <div class="container">
     <h3>{{ __('List of task statuses') }}</h3>
-    <div>
-        @include('flash::message')
-    </div>
     @auth
         <a class="btn btn-primary mb-2" href="{{ route('task_statuses.create') }}" role="button">{{ __('Add new task status') }}</a>
     @endauth

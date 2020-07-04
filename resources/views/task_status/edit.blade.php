@@ -6,11 +6,6 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Update Task status') }}</div>
-
-                <div>
-                    @include('flash::message')
-                </div>
-
                 <div class="card-body">
                     {{ Form::model($taskStatus, ['url' => route('task_statuses.update', $taskStatus), 'method' => 'PATCH']) }}
                         {{Form::token()}}

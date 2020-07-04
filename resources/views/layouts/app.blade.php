@@ -103,6 +103,11 @@
             </div>
         </nav>
         <main class="py-4">
+            <div class="container">
+                <div>
+                    @include('flash::message')
+                </div>
+            </div>
             @yield('content')
         </main>
     </div>

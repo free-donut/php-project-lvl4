@@ -6,11 +6,6 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Create new Task') }}</div>
-
-                <div>
-                    @include('flash::message')
-                </div>
-
                 <div class="card-body">
                     {{ Form::model($task, ['url' => route('tasks.store')]) }}
                         {{Form::token()}}

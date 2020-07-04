@@ -7,10 +7,6 @@
             <div class="card">
                 <div class="card-header">{{ __('Update') }}</div>
 
-                <div>
-                    @include('flash::message')
-                </div>
-
                 <div class="card-body">
                     <form method="POST" action="{{ route('users.update', $user) }}">
                         @method('PATCH')
