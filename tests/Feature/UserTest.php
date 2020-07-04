@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\User;
@@ -10,8 +9,6 @@ use Illuminate\Support\Facades\Hash;
 
 class UserTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * A basic feature test example.
      *
@@ -39,7 +36,8 @@ class UserTest extends TestCase
         $user = factory(User::class)->create();
 
         $response = $this->actingAs($user)->delete(route('users.destroy', ['user' => $user->id]));
-        $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect(route('main'));
         $this->assertSoftDeleted($user);
         //$response->assertStatus(200);
     }
@@ -70,7 +68,8 @@ class UserTest extends TestCase
         ];
 
         $response = $this->actingAs($user)->patch(route('users.update', $user), $params);
-        $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect(route('main'));
 
         $this->assertDatabaseHas('users', [
             'name' => 'Ron',
@@ -95,7 +94,8 @@ class UserTest extends TestCase
         ];
 
         $response = $this->actingAs($user)->patch(route('users.update', $user), $params);
-        $response->assertStatus(302);
+        $response->assertSessionHasErrors();
+        $response->assertRedirect(route('main'));
 
         $this->assertDatabaseMissing('users', [
             'name' => 'Hermione',

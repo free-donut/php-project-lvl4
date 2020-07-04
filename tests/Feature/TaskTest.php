@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Task;
@@ -10,9 +9,6 @@ use App\User;
 
 class TaskTest extends TestCase
 {
-    use RefreshDatabase;
-
-
     public function testIndex()
     {
         $this->seed();
@@ -36,7 +32,8 @@ class TaskTest extends TestCase
         $user = User::find($params['creator_id']);
 
         $response = $this->actingAs($user)->post(route('tasks.store'), $params);
-        $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect(route('tasks.index'));
 
         $this->assertDatabaseHas('tasks', $params);
     }
@@ -66,7 +63,8 @@ class TaskTest extends TestCase
         $params = factory(Task::class)->make(['creator_id' => $task->creator->id])->toArray();
 
         $response = $this->actingAs($task->creator)->patch(route('tasks.update', $task), $params);
-        $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect(route('tasks.index'));
 
         $this->assertDatabaseHas('tasks', $params);
     }
@@ -77,7 +75,8 @@ class TaskTest extends TestCase
         $task = factory(Task::class)->create();
         
         $response = $this->actingAs($task->creator)->delete(route('tasks.destroy', $task));
-        $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect(route('tasks.index'));
         
         $this->assertSoftDeleted($task);
     }

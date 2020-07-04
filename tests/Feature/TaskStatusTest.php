@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\TaskStatus;
@@ -10,8 +9,6 @@ use App\User;
 
 class TaskStatusTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * A basic feature test example.
      *
@@ -40,7 +37,8 @@ class TaskStatusTest extends TestCase
         $params = ['name' => 'Gandalf'];
 
         $response = $this->actingAs($user)->post(route('task_statuses.store'), $params);
-        $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect(route('task_statuses.index'));
 
         $this->assertDatabaseHas('task_statuses', $params);
     }
@@ -62,7 +60,8 @@ class TaskStatusTest extends TestCase
         $params = ['name' => 'Draco'];
 
         $response = $this->actingAs($user)->patch(route('task_statuses.update', $taskStatus), $params);
-        $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect(route('task_statuses.index'));
 
         $this->assertDatabaseHas('task_statuses', $params);
     }
@@ -73,7 +72,8 @@ class TaskStatusTest extends TestCase
         $taskStatus = factory(TaskStatus::class)->create();
 
         $response = $this->actingAs($user)->delete(route('task_statuses.destroy', $taskStatus));
-        $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect(route('task_statuses.index'));
 
         $this->assertDeleted($taskStatus);
     }
