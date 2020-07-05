@@ -14,6 +14,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 class TaskController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth')->only(['create', 'edit']);
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -63,11 +68,6 @@ class TaskController extends Controller
      */
     public function create()
     {
-        if (!Auth::check()) {
-            flash(__('messages.not_logged'))->error();
-            return redirect()->route('main');
-        }
-
         $task = new Task();
         $statuses = TaskStatus::pluck('name', 'id')->toArray();
         $assignees = User::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
@@ -123,10 +123,6 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        if (!Auth::check()) {
-            flash(__('messages.not_logged'))->error();
-            return redirect()->route('main');
-        }
         $task = Task::findOrFail($id);
         $statuses = TaskStatus::pluck('name', 'id')->toArray();
         $assignees = User::orderBy('name', 'asc')->pluck('name', 'id')->toArray();

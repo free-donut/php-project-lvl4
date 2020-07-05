@@ -10,6 +10,10 @@ use App\User;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth')->only(['edit']);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -45,10 +49,6 @@ class UserController extends Controller
      */
     public function edit(int $id)
     {
-        if (!Auth::check()) {
-            flash(__('messages.not_logged'))->error();
-            return redirect()->route('main');
-        }
         if ($id !== Auth::id()) {
             flash(__('messages.denied'))->error();
             return redirect()->route('main');

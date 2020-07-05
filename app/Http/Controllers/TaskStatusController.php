@@ -8,6 +8,11 @@ use App\TaskStatus;
 
 class TaskStatusController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth')->only(['create', 'edit']);
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -26,10 +31,6 @@ class TaskStatusController extends Controller
      */
     public function create()
     {
-        if (!Auth::check()) {
-            flash(__('messages.not_logged'))->error();
-            return redirect()->route('main');
-        }
         $taskStatus = new TaskStatus();
         return view('task_status.create', compact('taskStatus'));
     }
@@ -65,11 +66,6 @@ class TaskStatusController extends Controller
      */
     public function edit($id)
     {
-        if (!Auth::check()) {
-            flash(__('messages.not_logged'))->error();
-            return redirect()->route('main');
-        }
-        
         $taskStatus = TaskStatus::findOrFail($id);
         return view('task_status.edit', compact('taskStatus'));
     }
