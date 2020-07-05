@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreTask;
+use App\Http\Requests\UpdateTask;
 use Illuminate\Support\Facades\Auth;
 use App\Task;
 use App\Tag;
@@ -79,15 +81,9 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTask $request)
     {
-        $validatedParams = $this->validate($request, [
-            'name' => 'required|unique:tasks,name,',
-            'description' => 'max:1000',
-            'status_id' => 'required|exists:task_statuses,id',
-            'assigned_to_id' => 'required|exists:users,id',
-            'tagData' => 'max:255',
-        ]);
+        $validatedParams = $request->validated();
 
         $creator = Auth::user();
         $task = $creator->creatorTasks()->make($validatedParams);
@@ -146,17 +142,10 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateTask $request, $id)
     {
         $task = Task::findOrFail($id);
-
-        $validatedParams = $this->validate($request, [
-            'name' => 'required|unique:tasks,name,' . $id,
-            'description' => 'max:1000',
-            'status_id' => 'required|exists:task_statuses,id',
-            'assigned_to_id' => 'required|exists:users,id',
-            'tagData' => 'max:255',
-        ]);
+        $validatedParams = $request->validated();
 
         $task->fill($validatedParams);
         $task->save();
