@@ -18,7 +18,7 @@ class TaskController extends Controller
     {
         $this->middleware('auth')->only(['create', 'edit']);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -145,14 +145,16 @@ class TaskController extends Controller
 
         $task->fill($validatedParams);
         $task->save();
+        
+        $tags = [];
         if ($request->tagData) {
             $tags = array_map('trim', explode(',', $request->tagData));
 
             foreach ($tags as $tagName) {
-                $tag = Tag::firstOrCreate(['name' => $tagName]);
-                $task->tags()->attach($tag);
+                $tags[] = Tag::firstOrCreate(['name' => $tagName])->id;
             }
         }
+        $task->tags()->sync($tags);
 
         flash(__('messages.updated', ['name' => 'Task']))->success();
 
