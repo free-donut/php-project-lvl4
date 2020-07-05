@@ -15,10 +15,8 @@ class UpdateTask extends StoreTask
     public function rules()
     {
         return array_merge(parent::rules(), [
-            'name' => [
-                'required',
-                Rule::unique('tasks')->ignore($this->route('id'))
-            ]
+            'name' => 'required|unique:tasks,name,' . $this->route('task'),
+
         ]);
     }
 }
