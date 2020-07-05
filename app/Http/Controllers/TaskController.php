@@ -182,14 +182,11 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        $task = Task::findOrFail($id);
 
-        if ($task->creator->id === Auth::id()) {
-            $task->delete();
-            flash(__('messages.deleled', ['name' => 'Task']))->success();
-        } else {
-            flash(__('messages.denied.'))->error();
-        }
+        $task = Task::findOrFail($id);
+        $this->authorize('delete', $task);
+        $task->delete();
+        flash(__('messages.deleled', ['name' => 'Task']))->success();
 
         return redirect()->route('tasks.index');
     }
