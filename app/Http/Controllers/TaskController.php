@@ -11,6 +11,8 @@ use App\Tag;
 use App\TaskStatus;
 use App\User;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class TaskController extends Controller
 {
@@ -34,22 +36,10 @@ class TaskController extends Controller
                 'filter.tag_id' => 'nullable|exists:tags,id',
             ]);
 
-            $filterParams = $validatedParams['filter'];
-            $tasks = Task::query();
-
-            if ($filterParams['status_id']) {
-                $tasks->where('status_id', $filterParams['status_id']);
-            } elseif ($filterParams['creator_id']) {
-                $tasks->orWhere('creator_id', $filterParams['creator_id']);
-            } elseif ($filterParams['assigned_to_id']) {
-                $tasks->orWhere('assigned_to_id', $filterParams['assigned_to_id']);
-            } elseif ($filterParams['tag_id']) {
-                $tasks->orWhereHas('tags', function (Builder $query) use ($filterParams) {
-                    $query->where('tag_id', $filterParams['tag_id']);
-                });
-            }
-
-            $tasks = $tasks->orderBy('created_at', 'desc')->paginate(10);
+            $tasks = QueryBuilder::for(Task::class)
+                ->allowedFilters(['status_id', 'creator_id', 'assigned_to_id', 'tag_id'])
+                ->paginate(10)
+                ->appends(request()->query());
         } else {
             $tasks = Task::orderBy('created_at', 'desc')->paginate(10);
         }
