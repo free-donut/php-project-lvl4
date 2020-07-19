@@ -64,9 +64,8 @@ class TaskStatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(TaskStatus $taskStatus)
     {
-        $taskStatus = TaskStatus::findOrFail($id);
         return view('task_status.edit', compact('taskStatus'));
     }
 
@@ -77,12 +76,10 @@ class TaskStatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, TaskStatus $taskStatus)
     {
-        $taskStatus = TaskStatus::findOrFail($id);
-
         $data = $this->validate($request, [
-            'name' => 'required|unique:task_statuses,name,' . $id,
+            'name' => 'required|unique:task_statuses,name,' . $taskStatus->id,
         ]);
         $taskStatus->name = $request->name;
         $taskStatus->save();
@@ -96,9 +93,8 @@ class TaskStatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(TaskStatus $taskStatus)
     {
-        $taskStatus = TaskStatus::findOrFail($id);
         $taskStatus->delete();
         flash(__('messages.deleled', ['name' => 'Task Status']))->success();
         return redirect()->route('task_statuses.index');

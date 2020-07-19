@@ -99,9 +99,8 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Task $task)
     {
-        $task = Task::findOrFail($id);
         return view('task.show', compact('task'));
     }
 
@@ -111,9 +110,8 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Task $task)
     {
-        $task = Task::findOrFail($id);
         $statuses = TaskStatus::pluck('name', 'id')->toArray();
         $assignees = User::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
         $tags = $task->tags()->get()->pluck('name')->toArray();
@@ -128,9 +126,8 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTask $request, $id)
+    public function update(UpdateTask $request, Task $task)
     {
-        $task = Task::findOrFail($id);
         $validatedParams = $request->validated();
 
         $task->fill($validatedParams);
@@ -157,10 +154,9 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Task $task)
     {
 
-        $task = Task::findOrFail($id);
         $this->authorize('delete', $task);
         $task->delete();
         flash(__('messages.deleled', ['name' => 'Task']))->success();
